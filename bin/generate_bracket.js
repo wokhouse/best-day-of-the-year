@@ -15,7 +15,7 @@ const getDateFromDayNum = (dayNum, year) => {
   return date;
 }
 
-const generate = (leap = true) => {
+const createDayObj = (leap = true) => {
   // if we include leap day, bracket will have 366 days
   // otherwise, it will have 365
   const dayCount = (leap) ? 366 : 365;
@@ -39,13 +39,35 @@ const generate = (leap = true) => {
       date,
       // dont include year in string since this is a general poll for the best day in the year
       string: date.format('MMMM Do (M/D)'),
+      eliminated: false,
+      // when day is eliminated, keep track of what round it was eliminated in
+      // and what group/poll it was eliminiated in
+      eliminatedRound: undefined,
+      eliminatedGroup: undefined,
     }
   });
   const out = {
     keys: dayArray,
-    data: days,
+    days,
   };
   return out;
+}
+
+const generate = (leap = true) => {
+  const dateObj = createDayObj(leap);
+  // generate  poll numbers for bracket
+  const round = 1;
+  // get non-excluded day indexes
+  const daysInPlay = [];
+  dateObj.keys.map((d) => {
+    if (!dateObj.days[d].excluded) daysInPlay.push(d);
+  });
+  // generate group/poll numbers in groups of 4 since that's how many twitter allows
+  daysInPlay.map((d) => {
+    const group = Math.floor(d / 4);
+    dateObj.days[d][`round${round}group`] = group;
+  });
+  console.log(dateObj);
 }
 
 module.exports = { generate };
