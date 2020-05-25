@@ -1,0 +1,23 @@
+{
+  "name": "best-day-of-the-year",
+  "version": "1.0.0",
+  "description": "tournament bracket best day of the year conducted on twitter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/overwatchcorp/best-day-of-the-year.git"
+  },
+  "author": "Jade Fung <hello@fungj.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/overwatchcorp/best-day-of-the-year/issues"
+  },
+  "homepage": "https://github.com/overwatchcorp/best-day-of-the-year#readme",
+  "dependencies": {
+    "knuth-shuffle": "^1.0.8",
+    "moment": "^2.26.0"
+  }
+}
