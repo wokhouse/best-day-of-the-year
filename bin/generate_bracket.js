@@ -1,5 +1,7 @@
 // one time script for generating a bracket of days of the year
 const moment = require('moment');
+const prompt = require('prompt');
+const clipboardy = require('clipboardy');
 
 // from: https://stackoverflow.com/a/26185557
 const getDateFromDayNum = (dayNum, year) => {
@@ -53,7 +55,7 @@ const createDayObj = (leap = true) => {
   return out;
 }
 
-const generate = (leap = true) => {
+const generateRound1 = (leap = true) => {
   const dateObj = createDayObj(leap);
   // generate  poll numbers for bracket
   const round = 1;
@@ -67,7 +69,37 @@ const generate = (leap = true) => {
     const group = Math.floor(d / 4);
     dateObj.days[d][`round${round}group`] = group;
   });
-  console.log(dateObj);
+  return dateObj;
 }
 
-module.exports = { generate };
+const bracket = generateRound1();
+
+// collect days by group
+const items = {
+  //  part1: {},
+  //  part2: {},
+  //  part3: {},
+  //  part4: {},
+};
+bracket.keys.map((d) => {
+  const day = bracket.days[d];
+  const group = day.round1group;
+  // let part = '';
+  // if (group < 25) part = 'part1'; 
+  // else if (group >= 25 && group < 50) part = 'part2'; 
+  // else if (group >= 50 && group < 75) part = 'part3'; 
+  // else part = 'part4'; 
+  // if (!items[part][group]) items[part][group] = { pollString: `${group + 1}/92`, pollItems: [day.string] };
+  // else items[part][group].pollItems.push(day.string);
+  if (!items[group]) items[group] = { pollString: `${group + 1}/92`, pollItems: [day.string] };
+  else items[group].pollItems.push(day.string);
+});
+
+// make first tweet say something other than (X/N)
+// items.part1[0].pollString = `VOTE FOR THE BEST 📅 DAY ROUND 1: THE INCREDIBLY CHAOTIC THREAD OF 92 POLLS CONTAINING ALL 365 DAYS + LEAP YEAR DAY. VOTE FOR YOUR FAVORITE DAYS AND THEY WILL ADVANCE TO ROUND 2`
+items[0].pollString = `VOTE FOR THE BEST 📅 DAY ROUND 1: THE INCREDIBLY CHAOTIC THREAD OF 92 POLLS CONTAINING ALL 365 DAYS + LEAP YEAR DAY. VOTE FOR YOUR FAVORITE DAYS AND THEY WILL ADVANCE TO ROUND 2`
+
+console.log(items);
+
+// copy JSON to clipboard
+clipboardy.writeSync(JSON.stringify(items));
