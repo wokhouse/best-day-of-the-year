@@ -52,21 +52,29 @@ const login = async (page) => {
   console.log(`Logged in successfully to: ${username}`);
 };
 
-const pause = 100;
+const pause = 1500;
 
 const addTweet = async (page, index) => {
   const { pollString, pollItems } = items[index];
   console.log(`writing tweet: ${index + 1} / 92`);
-  // press add tweet button
-  await page.mouse.click(589, 739);
   // wait for page to load
   await delay(pause);
-  // scroll down to expose new tweet button
-  await autoScroll(page);
+  // hit comment button
+  // different coords for 2nd tweet because first tweet is bigger and so second tweet will be lower
+
+  if (index == 1) await page.mouse.click(167, 569);
+  else await page.mouse.click(171, 460);
+
+  await delay(pause);
+
   // type tweet body
   await page.keyboard.type(pollString);
   // add poll
-  await page.mouse.click(190, 733);
+  // different coords for 2nd tweet because first tweet is bigger and so second tweet will be lower
+
+  if (index == 1) await page.mouse.click(184, 576);
+  else await page.mouse.click(176, 509);
+
   // type option one
   await page.keyboard.type(pollItems[0]);
   await page.keyboard.press('Tab');
@@ -80,8 +88,14 @@ const addTweet = async (page, index) => {
   await page.keyboard.press('Enter');
   // type option four
   await page.keyboard.type(pollItems[3]);
-  // scroll down to expose new tweet button
-  await autoScroll(page);
+  // send tweet
+  await page.mouse.click(582, 20);
+  // wait until tweet is sent
+  await delay(pause);
+  // hit "view tweet"
+  await page.mouse.click(402, 529);
+  // wait for tweet page to laod
+  await delay(pause);
 
   return addTweet(page, index + 1);
 };
@@ -96,7 +110,7 @@ const main = async () => {
   // set device size to one tweet height
   await page.setViewport({
     width: 640,
-    height: 766,
+    height: 580,
     deviceScaleFactor: 1,
   });
 
@@ -130,10 +144,15 @@ const main = async () => {
   await page.keyboard.press('Enter');
   // type option four
   await page.keyboard.type(pollItems[3]);
+  // send tweet
+  await page.mouse.click(582, 20);
+  // wait until tweet is sent
+  await delay(1000);
+  // hit "view tweet"
+  await page.mouse.click(402, 529);
 
-  // recursively add the rest of the tweets
+  // send the rest of the tweets!
   await addTweet(page, i + 1);
-  console.log('complete!');
 };
 
 main();
